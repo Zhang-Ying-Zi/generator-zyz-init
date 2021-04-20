@@ -33,6 +33,10 @@ module.exports = {
       output: "README.md",
     },
     {
+      input: "editorconfig.tpl",
+      output: ".editorconfig",
+    },
+    {
       input: "favicon.ico",
       output: "src/favicon.ico",
     },
