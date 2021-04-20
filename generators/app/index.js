@@ -5,6 +5,8 @@ const mkdirp = require("mkdirp");
 const path = require("path");
 const _ = require("lodash");
 
+let templateData = {};
+
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
@@ -15,16 +17,28 @@ module.exports = class extends Generator {
   }
 
   prompting() {
-    return this.prompt(config.prompts).then((answers) => {
-      this.answers = answers;
-      // this.config.set("appname", this.answers.appname);
-    });
+    let prompts = [];
+    for (let prompt of config.prompts) {
+      if (this.options.hasOwnProperty(prompt.name)) {
+        templateData[prompt.name] = this.options[prompt.name];
+      } else {
+        prompts.push(prompt);
+      }
+    }
+
+    return prompts.length
+      ? this.prompt(prompts).then((answers) => {
+          for (let answerName in answers) {
+            templateData[answerName] = answers[answerName];
+          }
+        })
+      : null;
   }
 
   writing() {
-    const templateData = {
-      appname: this.answers.appname || this.appname, // Default to current folder name
-    };
+    for (let key in templateData) {
+      this.config.set(key, templateData[key]);
+    }
     const copy = (input, output) => {
       this.fs.copy(
         this.templatePath(input),

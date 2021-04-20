@@ -16,7 +16,6 @@ module.exports = {
       type: "input",
       name: "appname",
       message: "请输入项目名称",
-      store: true,
     },
   ],
   filesToCopy: [
