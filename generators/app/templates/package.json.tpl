@@ -27,10 +27,6 @@
   "dependencies": {
   },
   "devDependencies": {
-    "eslint": "^7.24.0",
-    "eslint-config-prettier": "^8.2.0",
-    "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-vue": "^7.9.0",
     "prettier": "^2.2.1"
   }
 }

@@ -44,14 +44,6 @@ module.exports = {
       output: ".prettierrc.js",
     },
     {
-      input: ".eslintignore",
-      output: ".eslintignore",
-    },
-    {
-      input: ".eslintrc.js",
-      output: ".eslintrc.js",
-    },
-    {
       input: ".vscode/settings.json",
       output: ".vscode/settings.json",
     },
