@@ -5,7 +5,9 @@ const mkdirp = require("mkdirp");
 const path = require("path");
 const _ = require("lodash");
 
-let templateData = {};
+let templateData = {
+  appname: "",
+};
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -17,12 +19,34 @@ module.exports = class extends Generator {
   }
 
   prompting() {
+    this.prevShareConfig = this.fs.readJSON(".yo-rc.json") || {};
+
     let prompts = [];
     for (let prompt of config.prompts) {
       if (this.options.hasOwnProperty(prompt.name)) {
+        // this.options 可能是由composeWith传入
+        // 权限最高
+        // 如果是composeWith传入，请保持同一参数都由composeWith传入，因为yo-rc.json中的顺序不固定，可能会冲突
         templateData[prompt.name] = this.options[prompt.name];
+        this.config.set(prompt.name, this.options[prompt.name]);
       } else {
-        prompts.push(prompt);
+        let isFindInOtherYoConfig = false;
+        // 其他generator的配置项
+        for (let otherYoConfigKey in this.prevShareConfig) {
+          if (
+            this.prevShareConfig[otherYoConfigKey].hasOwnProperty(prompt.name)
+          ) {
+            templateData[prompt.name] = this.prevShareConfig[otherYoConfigKey][
+              prompt.name
+            ];
+            isFindInOtherYoConfig = true;
+            break;
+          }
+        }
+        // 未被其他generator影响的prompt
+        if (!isFindInOtherYoConfig) {
+          prompts.push(prompt);
+        }
       }
     }
 
@@ -30,21 +54,15 @@ module.exports = class extends Generator {
       ? this.prompt(prompts).then((answers) => {
           for (let answerName in answers) {
             templateData[answerName] = answers[answerName];
+            this.config.set(answerName, answers[answerName]);
           }
         })
       : null;
   }
 
   writing() {
-    for (let key in templateData) {
-      this.config.set(key, templateData[key]);
-    }
     const copy = (input, output) => {
-      this.fs.copy(
-        this.templatePath(input),
-        // input,
-        this.destinationPath(output)
-      );
+      this.fs.copy(this.templatePath(input), this.destinationPath(output));
     };
     // from local template using EJS
     const copyTpl = (input, output, data) => {
