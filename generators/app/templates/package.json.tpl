@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
-  "scripts": {
-  },
   "keywords": [
   ],
   "author": {
