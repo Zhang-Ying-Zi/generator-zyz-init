@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="description" content="" />
-    <link rel="icon" href="favicon.ico" />
+    <!-- <link rel="icon" href="favicon.ico" /> -->
     <title><%= appname %></title>
   </head>
 
